@@ -1,8 +1,14 @@
-import express from 'express'
+import express, { Application } from 'express';
+import routes from './routes';
+import bodyParser from 'body-parser';
 
-const app: express.Application = express();
+const app: Application = express();
 
-app.get('/', function (req, res) {
-    res.send('Hello World!');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+app.listen(8080, function() {
+  console.log('Example app listening on port 8080!');
 });
 
+routes(app);
