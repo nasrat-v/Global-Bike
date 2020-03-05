@@ -24,4 +24,7 @@ User.init({
     createdAt: 'created_at',
     updatedAt: 'updated_at',
 });
+User.sync()
+    .then(() => console.log('Oh yeah! User table created successfully'))
+    .catch(_err => console.log('BTW, did you enter wrong database credentials?'));
 exports.default = User;
