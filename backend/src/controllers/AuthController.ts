@@ -6,8 +6,8 @@ class AuthController {
   static login(request: Request, response: Response) {
     User.authenticate(request.body.email, request.body.password)
       .then(value => {
-        const payload = { id: value.id };
-        const token = jwt.sign(payload, 'wowwow');
+        const payload = { userId: value.id };
+        const token = jwt.sign(payload, 'dq6DyfbcfPouDZ8uKduWrFePdmzlh6vc');
         return response.status(200).json({ jwt: token });
       })
       .catch(_error => {

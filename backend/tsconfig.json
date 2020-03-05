@@ -6,7 +6,7 @@
     "esModuleInterop": true,
     "target": "ES6",
     "outDir": "build",
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "@src/*": ["src/*"],
       "@controllers/*": ["src/controllers/*"],

@@ -1,8 +1,9 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { AuthRequest } from '@src/typings/express';
 
 class UsersController {
-  static me(request: Request, response: Response) {
-    return response.json();
+  static me(request: AuthRequest, response: Response) {
+    return response.json(request.user);
   }
 }
 
