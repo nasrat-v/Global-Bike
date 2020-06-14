@@ -1,30 +1,35 @@
-import { Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
 import { User } from '@src/models';
-import { AuthRequest } from '@src/typings/express';
+import { NextFunction, Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 
 const authMiddleware = (
-  request: AuthRequest,
+  request: Request,
   response: Response,
   next: NextFunction,
-) => {
+): void => {
   try {
-    const token = request.headers.authorization.split(' ')[1];
+    if (!request.headers.authorization) {
+      throw new Error();
+    }
+    const token: string = request.headers.authorization.split(' ')[1];
     const decodedToken: any = jwt.verify(
       token,
       'dq6DyfbcfPouDZ8uKduWrFePdmzlh6vc',
     );
-    const userId = decodedToken.userId;
+    const userId: any = decodedToken.userId;
     User.findOne({ where: { id: userId } })
-      .then(value => {
-        request.user = value;
+      .then((value: User | null): void => {
+        if (!value) {
+          throw new Error();
+        }
+        request.body.user = value;
         next();
       })
-      .catch(() => {
+      .catch((): void => {
         throw new Error();
       });
   } catch (e) {
-    response.status(401).json({ e });
+    response.status(401).json();
   }
 };
 

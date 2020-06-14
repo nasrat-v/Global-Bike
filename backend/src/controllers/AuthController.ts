@@ -1,30 +1,32 @@
+import User from '@models/user';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import User from '@models/user';
 
 class AuthController {
-  static login(request: Request, response: Response) {
+  public static login(request: Request, response: Response): void {
     User.authenticate(request.body.email, request.body.password)
-      .then(value => {
-        const payload = { userId: value.id };
-        const token = jwt.sign(payload, 'dq6DyfbcfPouDZ8uKduWrFePdmzlh6vc');
-        return response.status(200).json({ jwt: token });
-      })
-      .catch(_error => {
-        return response.status(401).json();
-      });
+      .then(
+        (value: User | null): Response => {
+          if (value === null) {
+            throw new Error();
+          }
+          const payload = { userId: value.id };
+          const token = jwt.sign(payload, 'dq6DyfbcfPouDZ8uKduWrFePdmzlh6vc');
+
+          return response.status(200).json({ jwt: token });
+        },
+      )
+      .catch((): Response => response.status(401).json());
   }
-  static register(request: Request, response: Response) {
+  public static register(request: Request, response: Response): void {
     User.create<User>({
       email: request.body.email,
       password: request.body.password,
       firstName: request.body.firstName,
       lastName: request.body.lastName,
     })
-      .then(() => {
-        return response.status(201).json();
-      })
-      .catch(error => {
+      .then((): Response => response.status(201).json())
+      .catch((error): any => {
         throw error;
       });
   }

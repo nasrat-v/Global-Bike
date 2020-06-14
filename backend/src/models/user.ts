@@ -1,8 +1,13 @@
 import bcrypt from 'bcrypt';
 import { DataTypes, Model } from 'sequelize';
+
 import { db } from '../config';
 
 class User extends Model {
+  public static authenticate: (
+    email: string,
+    password: string,
+  ) => Promise<User | null>;
   public id!: number;
   public email!: string;
   public password!: string;
@@ -10,67 +15,75 @@ class User extends Model {
   public lastName!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
-  static authenticate: (email, password) => Promise<User | null>;
 }
 
 User.init(
   {
     id: {
-      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
+      type: DataTypes.INTEGER,
     },
     email: {
-      type: new DataTypes.STRING(255),
       allowNull: false,
+      type: new DataTypes.STRING(255),
     },
     password: {
-      type: new DataTypes.STRING(255),
       allowNull: false,
+      type: new DataTypes.STRING(255),
       set(password: string): void {
         const hash = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+        // @ts-ignore
         this.setDataValue('password', hash);
       },
     },
     firstName: {
-      type: new DataTypes.STRING(255),
       allowNull: false,
       field: 'first_name',
+      type: new DataTypes.STRING(255),
     },
     lastName: {
-      type: new DataTypes.STRING(255),
       allowNull: false,
       field: 'last_name',
+      type: new DataTypes.STRING(255),
     },
     createdAt: {
-      type: new DataTypes.DATE(),
       allowNull: false,
       field: 'created_at',
+      type: new DataTypes.DATE(),
     },
     updatedAt: {
-      type: new DataTypes.DATE(),
       allowNull: false,
       field: 'updated_at',
+      type: new DataTypes.DATE(),
     },
   },
   {
-    tableName: 'users',
     sequelize: db,
+    tableName: 'users',
   },
 );
 
-User.authenticate = (email: string, password: string) =>
+User.authenticate = (email: string, password: string): Promise<User | null> =>
   User.findOne({ where: { email } })
-    .then(value => {
+    .then((value: User | null): User | null => {
+      if (!value) {
+        return null;
+      }
       if (bcrypt.compareSync(password, value.password)) {
         return value;
       }
+
       return null;
     })
-    .catch(error => null);
+    .catch((): null => null);
 
+// tslint:disable:no-console
 User.sync()
-  .then(() => console.log('Oh yeah! User table created successfully'))
-  .catch(_err => console.log('BTW, did you enter wrong database credentials?'));
+  .then((): void => console.log('Oh yeah! User table created successfully'))
+  .catch((): void =>
+    console.log('BTW, did you enter wrong database credentials?'),
+  );
+// tslint:enable:no-console
 
 export default User;

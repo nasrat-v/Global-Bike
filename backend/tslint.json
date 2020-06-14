@@ -1,0 +1,37 @@
+{
+  "extends": ["tslint:all", "tslint-config-prettier"],
+  "rulesDirectory": [],
+  "linterOptions": {
+    "exclude": ["node_modules"]
+  },
+  "defaultSeverity": "error",
+  "jsRules": true,
+  "rules": {
+    "member-ordering": { "options": { "order": "statics-first" } },
+    "no-magic-numbers": false,
+    "no-any": false,
+    "no-implicit-dependencies": false,
+    "typedef": {
+      "options": [
+        "call-signature",
+        "arrow-call-signature",
+        "parameter",
+        "property-declaration",
+        "member-variable-declaration"
+      ]
+    },
+    "no-default-export": false,
+    "completed-docs": {
+      "options": {
+        "classes": {
+          "visibilities": "exported"
+        }
+      }
+    },
+    "ban-ts-ignore": false,
+    "no-null-keyword": false,
+    "object-literal-sort-keys": false,
+    "no-unnecessary-class": false,
+    "file-name-casing": false
+  }
+}
